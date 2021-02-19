@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', async function(event) {
     for(let i=0; i<movieList.length; i++){
         let movieID = movieList[i].id
         let moviePoster = movieList[i].poster_path
-         
+        
         document.querySelector('.movies').insertAdjacentHTML('beforeend', `
         <div class="w-1/5 p-4 movie-${movieID}">
             <img src="https://image.tmdb.org/t/p/w500/${moviePoster}" class="w-full">
@@ -34,20 +34,23 @@ window.addEventListener('DOMContentLoaded', async function(event) {
          </div> 
          `)
 
+        let checkMovieID = await db.collection('watched').doc(`${movieID}`).get()
+        if (checkMovieID.data()){
+            document.querySelector(`.movie-${movieID}`).classList.add('opacity-20')
+        } //closes if statement
+       
+        
         let movieLink = document.querySelector(`.movie-${movieID} .watched-button`)
         // console.log(movieLink)
         movieLink.addEventListener('click', async function(event){
-        event.preventDefault()
+        event.preventDefault()     
         console.log(`${movieID} was watched`)
         document.querySelector(`.movie-${movieID}`).classList.add('opacity-20')
-        })
-
-        if (movieLink == true){
-            let docRef = await db.collection('watched').set({
-                text: movieLink
-            })
-        }
-    }
+            let docRef = await db.collection('watched').doc(`${movieID}`).set({
+            })    
+        
+        }) //finishes event listener
+    } //finishes for loop
 
     let querySnapshot = await db.collection('watched').get()
         console.log(querySnapshot.size)
